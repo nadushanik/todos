@@ -1,0 +1,23 @@
+.rate-stars-container {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 4px;
+  }
+  
+  .rate-stars {
+    font-size: 16px;
+  }
+@media (max-width: 450px) {
+    .rate-stars{
+      font-size: 10px;
+    }
+    .rate-stars-container{
+      margin: 2px;
+      bottom: 10px;
+      right: 10px;
+    }
+}
