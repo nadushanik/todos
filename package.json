@@ -18,6 +18,7 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
     "@babel/core": "^7.26.0",
     "@babel/eslint-parser": "^7.25.9",
     "@babel/preset-react": "^7.25.9",
