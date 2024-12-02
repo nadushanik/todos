@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "predeploy": "npm run build",
-    "deployGHpages": "gh-pages -d build ",
+    "deployGHpages": "gh-pages -d build",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
