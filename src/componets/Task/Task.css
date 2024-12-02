@@ -1,0 +1,40 @@
+.todo-list li {
+	position: relative;
+	font-size: 24px;
+	border-bottom: 1px solid #ededed;
+}
+  .icon-pause,
+  .icon-play {
+	  font-size: 18px;
+	  width: 18px;
+	  height: 18px;
+	  margin-right: 4px;
+  }
+  
+  .todo-list li .icon-play {
+	  font-size: 15px;
+  }
+  .todo-list li .icon-pause {
+	  margin-bottom: 2px;
+  }
+  .icon-pause:before {
+	  content: '⏸';
+  }
+  
+  .icon-play:before {
+	  content: '▶';
+	  color: #af5b5e;
+  }
+  .timer{
+	  font-size: 18px;
+	  color: gray;
+	  position: relative;
+  }
+  .description{
+	min-width: 150px;
+  }
+  .created{
+	min-width: 150px;
+	margin-left: 5px;
+  }
+
