@@ -16,6 +16,9 @@ const createTask = (label, id, minutes, seconds) => {
     createdAt: new Date(),
     minutes,
     seconds,
+    isRunning: false,
+    startTime: null,
+    elapsedTime: 0,
   };
 };
 
@@ -25,7 +28,6 @@ const App = () => {
   ]);
   const [filter, setFilter] = useState("all");
   const [editingTask, setEditingTask] = useState(null);
-  const [timers, setTimers] = useState({});
   const [maxId, setMaxId] = useState(2);
 
   const delitTask = (id) => {
@@ -87,63 +89,40 @@ const App = () => {
   };
 
   const startTimer = (id) => {
-    const interval = setInterval(() => {
-      tick(id);
-    }, 1000);
-
-    setTimers((prevTimers) => ({
-      ...prevTimers,
-      [id]: {
-        ...prevTimers[id],
-        interval,
-        isRunning: true,
-      },
-    }));
+    setTodoData((prevTodoData) =>
+      prevTodoData.map((task) =>
+        task.id === id
+          ? { ...task, isRunning: true, startTime: Date.now() }
+          : task,
+      ),
+    );
   };
 
   const stopTimer = (id) => {
-    setTimers((prevTimers) => {
-      clearInterval(prevTimers[id].interval);
-      return {
-        ...prevTimers,
-        [id]: {
-          ...prevTimers[id],
-          isRunning: false,
-        },
-      };
-    });
+    setTodoData((prevTodoData) =>
+      prevTodoData.map((task) =>
+        task.id === id ? { ...task, isRunning: false } : task,
+      ),
+    );
   };
 
-  const tick = (id) => {
-    setTodoData((prevTodoData) => {
-      const task = prevTodoData.find((t) => t.id === id);
-      if (!task) return prevTodoData;
-
-      let { minutes, seconds } = task;
-
-      if (seconds > 0) {
-        seconds -= 1;
-      } else if (minutes > 0) {
-        minutes -= 1;
-        seconds = 59;
-      } else {
-        clearInterval(timers[id].interval);
-        return prevTodoData.map((t) =>
-          t.id === id ? { ...t, completed: true } : t,
-        );
-      }
-
-      return prevTodoData.map((t) =>
-        t.id === id ? { ...t, minutes, seconds } : t,
-      );
-    });
+  const updateElapsedTime = () => {
+    setTodoData((prevTodoData) =>
+      prevTodoData.map((task) => {
+        if (task.isRunning) {
+          const currentTime = Date.now();
+          const newElapsedTime = currentTime - task.startTime;
+          return { ...task, elapsedTime: newElapsedTime };
+        }
+        return task;
+      }),
+    );
   };
 
   useEffect(() => {
-    return () => {
-      Object.values(timers).forEach((timer) => clearInterval(timer.interval));
-    };
-  }, [timers]);
+    const interval = setInterval(updateElapsedTime, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   const activeTasksCount = todoData.filter((task) => !task.completed).length;
   const visibleTask = filterTasks(searchTasks(todoData), filter);
@@ -160,7 +139,6 @@ const App = () => {
           startEditing={startEditing}
           saveEditing={saveEditing}
           editingTask={editingTask}
-          timers={timers}
           startTimer={startTimer}
           stopTimer={stopTimer}
         />
