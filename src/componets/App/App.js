@@ -106,21 +106,32 @@ const App = () => {
     );
   };
 
-  const updateElapsedTime = () => {
-    setTodoData((prevTodoData) =>
-      prevTodoData.map((task) => {
-        if (task.isRunning) {
-          const currentTime = Date.now();
-          const newElapsedTime = currentTime - task.startTime;
-          return { ...task, elapsedTime: newElapsedTime };
-        }
-        return task;
-      }),
-    );
-  };
-
   useEffect(() => {
-    const interval = setInterval(updateElapsedTime, 1000);
+    const interval = setInterval(() => {
+      setTodoData((prevTodoData) =>
+        prevTodoData.map((task) => {
+          if (task.isRunning) {
+            const currentTime = Date.now();
+            const newElapsedTime = currentTime - task.startTime;
+            const totalTime = (task.minutes * 60 + task.seconds) * 1000;
+            const remainingTime = totalTime - newElapsedTime;
+
+            if (remainingTime <= 0 && !task.completed) {
+              return {
+                ...task,
+                completed: true,
+                isRunning: false,
+                elapsedTime: totalTime,
+              };
+            }
+
+            return { ...task, elapsedTime: newElapsedTime };
+          }
+          return task;
+        }),
+      );
+    }, 1000);
+
     return () => clearInterval(interval);
   }, []);
 
@@ -158,3 +169,4 @@ App.propTypes = {
 };
 
 export default App;
+
