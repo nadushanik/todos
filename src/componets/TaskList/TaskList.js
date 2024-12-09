@@ -12,7 +12,6 @@ const TaskList = ({
   startEditing,
   saveEditing,
   editingTask,
-  timers,
   startTimer,
   stopTimer,
 }) => {
@@ -35,7 +34,6 @@ const TaskList = ({
               />
               <Task
                 {...todo}
-                isRunning={timers[todo.id]?.isRunning}
                 startTimer={() => startTimer(todo.id)}
                 stopTimer={() => stopTimer(todo.id)}
               />
@@ -68,7 +66,6 @@ TaskList.propTypes = {
   startEditing: PropTypes.func,
   saveEditing: PropTypes.func,
   editingTask: PropTypes.number,
-  timers: PropTypes.object,
   startTimer: PropTypes.func,
   stopTimer: PropTypes.func,
 };
