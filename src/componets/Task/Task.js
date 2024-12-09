@@ -5,24 +5,24 @@ import { formatDistanceToNowStrict } from "date-fns";
 import "./Task.css";
 
 const Task = ({
+  id,
   label,
   createdAt,
   minutes,
   seconds,
   isRunning,
+  elapsedTime,
   startTimer,
   stopTimer,
 }) => {
+  const totalTime = (minutes * 60 + seconds) * 1000;
+  const remainingTime = totalTime - elapsedTime;
+
+  const remainingMinutes = Math.floor(remainingTime / 60000);
+  const remainingSeconds = Math.floor((remainingTime % 60000) / 1000);
+
   const normalizeTime = () => {
-    let normalizedMinutes = minutes;
-    let normalizedSeconds = seconds;
-
-    while (normalizedSeconds >= 60) {
-      normalizedSeconds -= 60;
-      normalizedMinutes += 1;
-    }
-
-    return `${normalizedMinutes.toString().padStart(2, "0")}:${normalizedSeconds.toString().padStart(2, "0")}`;
+    return `${remainingMinutes.toString().padStart(2, "0")}:${remainingSeconds.toString().padStart(2, "0")}`;
   };
 
   const timeAgo = formatDistanceToNowStrict(createdAt, { addSuffix: true });
@@ -31,9 +31,9 @@ const Task = ({
     <label>
       <span className="description">{label}</span>
       {isRunning ? (
-        <button className="icon-pause" onClick={stopTimer}></button>
+        <button className="icon-pause" onClick={() => stopTimer(id)}></button>
       ) : (
-        <button className="icon-play" onClick={startTimer}></button>
+        <button className="icon-play" onClick={() => startTimer(id)}></button>
       )}
       <span className="timer">{normalizeTime()}</span>
       <span className="created">created {timeAgo}</span>
@@ -42,13 +42,15 @@ const Task = ({
 };
 
 Task.propTypes = {
+  id: PropTypes.number.isRequired,
   label: PropTypes.string.isRequired,
   createdAt: PropTypes.instanceOf(Date).isRequired,
   minutes: PropTypes.number.isRequired,
   seconds: PropTypes.number.isRequired,
   isRunning: PropTypes.bool,
-  startTimer: PropTypes.func,
-  stopTimer: PropTypes.func,
+  elapsedTime: PropTypes.number.isRequired,
+  startTimer: PropTypes.func.isRequired,
+  stopTimer: PropTypes.func.isRequired,
 };
 
 export default Task;
